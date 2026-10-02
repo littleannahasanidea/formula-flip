@@ -30,5 +30,14 @@ Open the published address in a supported browser and select **Install app** or 
 
 ## Important data note
 
-Decks, cards, and study history use browser `localStorage`. They remain on the same browser and device but do not synchronize across devices. Data from the ChatGPT-hosted Formula Flip will not automatically transfer because it belongs to a different website address.
+Decks, cards, study history, and any reference images you attach to a formula are stored in the browser's **IndexedDB** (not `localStorage`), so there's much more headroom for images without filling up tiny storage quotas. Everything still stays on the same browser and device only — nothing syncs across devices, and nothing is uploaded anywhere. If this is an update over an older copy of Formula Flip that used `localStorage`, your existing decks/cards/history are automatically migrated into IndexedDB the first time you open the updated app.
+
+Data from the ChatGPT-hosted Formula Flip will not automatically transfer because it belongs to a different website address.
+
+## What changed in this revision
+
+- **Nested parentheses in equations are fixed.** The equation renderer now parses `frac()`, `sqrt()`, `^()` and `_()` recursively instead of with regular expressions, so expressions like `frac((P1 - P2), (ρ × g))` or even `frac(frac(P,ρ), (g × h))` render correctly. The quick-insert toolbar (x², x³, xᵃ, xₐ, √, a/b, π, α, β, θ, ρ, Δ, Σ, μ, λ, ×, ÷, ±) is unchanged.
+- One small behavior change from the old parser: the hardcoded `hf` → h<sub>f</sub> special case has been removed, since it was exactly the kind of one-off regex patch this fix was meant to get away from. Type `h_(f)` to get a subscripted h with f — the general subscript syntax now covers it.
+- **Reference images.** When adding or editing a formula, there's now a "Reference image" field — upload a diagram, textbook figure, handwritten solution, or screenshot. Images are resized and compressed in the browser before saving, and shown as a thumbnail in the formula list and under the answer during review.
+- **Storage moved to IndexedDB** for decks, cards, history, and images, so large images won't bump into `localStorage`'s small quota.
 
